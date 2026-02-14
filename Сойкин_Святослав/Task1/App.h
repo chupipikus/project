@@ -1,26 +1,27 @@
 #pragma once
 #include "pch.h"
-#include "VectorProcess.h"
 
-class App
-{
-	// обработка вектора по заданию
-	VectorProcess vectorProcess_;
+class App {
+    vector<float> v_;
+    string binFile_;
 
-	// им€ бинарного файла дл€ хранени€ вектора
-	string fileName_;
+    // steps of Task 1 implemented as separate functions
+    void step_countNegative();
+    void step_countOutsideInterval(float a, float b);
+    void step_sumBeforeFirstMin();
+    void step_sumBetweenFirstMinAndFirstMax();
+    void step_selectNegatives();
+    void step_selectOutsideInterval(float a, float b);
+    void step_sortDescending();
+    void step_sortByAbsAscending();
+    void step_moveOutsideIntervalToEnd(float a, float b);
 
-	// ¬ывод вектора в консоль, по m элементов в строке, точность 
-	// precision знаков
-	void show(const string &title, float a = 0, float b = 0, int m = 8, int precision = 3);
-	
-	static void show(const string &title, const vector<float> &data, int m = 8, int precision = 3);
+    float readFloatFromCin(const string &prompt);
+
+    void saveToBinary() const;
+    void loadFromBinary();
 
 public:
-	App();
-	App(const VectorProcess &vectorProcess, const string &fileName);
-
-	// ќбработка по заданию
-	void doProcess();
+    App();
+    void run();
 };
-

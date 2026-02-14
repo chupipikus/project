@@ -17,7 +17,7 @@ public:
     void sortById();
     void sortByDate();
     void sortByDestination();
-    void changeRequest(int id);  // 
+    void changeRequest(int id);  // фабричным
 
     const list<Request>& getList() const { return list_; }
 

@@ -1,193 +1,270 @@
 #include "App.h"
 #include "Utils.h"
+#include <locale>
+#include <cctype>
+#include <algorithm>
 
-App::App() :App("test.txt") {}
-App::App(const string& fileName) {
-	fileName_ = fileName;
-} // App::App
+App::App() : App("test.txt") {}
+App::App(const string& fileName) : fileName_(fileName) {}
 
-// Сформируйте частотный словарь слов текста. Ключом является слово, 
-// значением – количество таких слов в тексте, деленное на общее 
-// количество слов в тексте.
-void App::doFreqDictWords() {
-	showNavBarMessage(hintColor, "    Формирование частотного словаря слов текста");
+// viewText
+void App::viewText(const string& title, const string& fname) {
+    cout << "     " << title << "\n"
+        << "     +" << setfill('-') << setw(112) << "-" << "+"  // Уменьшено на 8
+        << setfill(' ') << "\n";
 
-	// Показать файл для обработки
-	viewText("Файл " + fileName_ + ", текст для обработки:");
+    fstream fs(fname, ios::in);
+    if (!fs.is_open()) {
+        throw exception(("Ошибка открытия файла " + fname + " для чтения").c_str());
+    }
+    fs.imbue(locale(".1251"));
 
-	// Сформировать частотный словарь слов
-	map<string, double> freqDict = TextProcessor::makeWordsFrequencyDict(fileName_);
+    int row = 1;
+    string line;
+    while (getline(fs, line)) {
+        cout << " " << setfill('0') << setw(3) << row++ << setfill(' ')
+            << " | " << left << setw(110) << line << right << " |\n";  // Уменьшено на 8
+    }
+    fs.close();
+    cout << "     +" << setfill('-') << setw(112) << "-" << "+"
+        << setfill(' ') << "\n";
+}
 
-	// Вывести словарь
-	show("\n\n    Частотный словарь слов текста, файл " + fileName_ + ":", freqDict);
-} // App::doFreqDictWords
-
-
-// Сформируйте частотный словарь букв текста. Ключом является буква 
-// (регистро-независимая), значением – количество вхождений этой буквы
-// в тексте, деленное на общее количество букв в тексте.
-void App::doFreqDictLetters() {
-	showNavBarMessage(hintColor, "    Формирование частотного словаря букв текста");
-
-	// Показать файл для обработки
-	viewText("Файл " + fileName_ + ", текст для обработки:");
-
-	// Сформировать частотный словарь букв
-	map<char, double> freqDict = TextProcessor::makeLettersFrequencyDict(fileName_);
-
-	// Вывести словарь
-	show("\n\n    Частотный словарь букв текста, файл " + fileName_ + ":", freqDict);
-} // App::doFreqDictLetters
-
-
-// Поменять местами в тексте каждые две соседние строки, измененный текст 
-// сохранить в файле swap.tx
-void App::doSwapLines() {
-	showNavBarMessage(hintColor, "    Поменять местами в тексте каждые две соседние строки");
-
-	// Показать файл для обработки
-	viewText("Файл " + fileName_ + ", текст для обработки:");
-
-	// Обработка файла, в тексте поменять местами каждые две соседние строки,
-	// сохранить измененный текст в файл result
-	string result = "swap.txt";
-	TextProcessor::swapLines(fileName_, result);
-
-	// Вывод обработанного файла
-	viewText("Файл " + result + ", в тексте каждые две соседние строки поменяли местами:", result);
-} // App::doSwapLines
-
-
-// Перевести все слова в тексте в формат: первая буква верхнего регистра, 
-// остальные буквы в нижнем регистре (Это Пример Такого Формата), 
-// сохранить текст в файле capitalize.txt 
-void App::doWordsCapitalize() {
-	showNavBarMessage(hintColor, "    Все слова текста перевести в регистр Capitalize, запись в файл");
-
-	// Показать файл для обработки
-	viewText("Файл " + fileName_ + ", текст для обработки:");
-
-	// Обработка файла, в тексте все слова перевести в регистр Capitalize,
-	// сохранить измененный текст в файл result
-	string result = "capitalize.txt";
-	TextProcessor::capitalizeText(fileName_, result);
-
-	// Вывод обработанного файла
-	viewText("Файл " + result + ", в тексте каждые две соседние строки поменяли местами:", result);
-} // App::doWordsCapitalize
-
-
-// Упорядочить строки текста по длине, сохранить текст в файл с именем 
-// orderByLen.txt
-void App::doOrderByLen() {
-	showNavBarMessage(hintColor, "    Упорчдочить строки текста по длине, запись в файл");
-
-	// Показать файл для обработки
-	viewText("Файл " + fileName_ + ", текст для обработки:");
-
-	// Упорядочить текст по длине строк, сохранить измененный текст в файл result
-	string result = "orderByLen.txt";
-	TextProcessor::orderByLen(fileName_, result);
-
-	// Вывод обработанного файла
-	viewText("Файл " + result + ", текст упорядочен по длине строк:", result);
-} // App::doOrderByLen
-
-
-// В каждой строке текста упорядочить слова по алфавиту, оставить между 
-// словами по одному пробелу, сохранить измененный текст в файле с именем 
-// orderlines.txt 
-void App::doOrderWordsInLines() {
-	showNavBarMessage(hintColor, "    Упорчдочить слова а строках текста по алфавиту, запись в файл");
-
-	// Показать файл для обработки
-	viewText("Файл " + fileName_ + ", текст для обработки:");
-
-	// Упорядочить слоыв в строках \по алфавиту, сохранить измененный текст в файл result
-	string result = "orderlines.txt";
-	TextProcessor::orderLines(fileName_, result);
-
-	// Вывод обработанного файла
-	viewText("Файл " + result + ", слова в чтроках упорядочены по алфавиту:", result);
-} // App::doOrderWordsInLines
-
-
-// -------------------------------------------------------
-
-void App::viewText(const string & title, const string &fileName) {
-	cout<< "     " << title << "\n"
-		<< "     +" << setfill('-') << setw(92) << "-" << "+" 
-		<< setfill(' ') << "\n";
-
-	fstream fs(fileName, ios::in);
-
-	if (!fs.is_open()) {
-		throw exception(("App: Ошибка открытия файла " + fileName + " для чтения").c_str());
-	} // if
-
-	// задать кодировку потока вывода CP1251  
-	fs.imbue(locale(".1251"));
-
-	int row = 1;
-	while (!fs.eof()) {
-		string line;
-		getline(fs, line);
-
-		cout << " " << setfill('0') << setw(3) << row++ << setfill(' ')
-			<< " | " << left << setw(90) << line << right << " |\n";
-
-		fs.peek();
-	} // ehile
-
-	fs.close();
-	cout<< "     +" << setfill('-') << setw(92) << "-" << "+"
-		<< setfill(' ') << "\n";
-} // App::viewText
-
-
-// Делегирующий вызов для вывода файла fileName_
-void App::viewText(const string& title) {
-	viewText(title, fileName_);
-} // App::viewText
-
-
-// Вывод частотного словаря слов
+// show
 void App::show(const string& title, const map<string, double>& freqDict) {
-	cout << "    " << title << "\n" << setprecision(3);
-	
-	int counter = 1;
-	double r = 0;
-	for (auto &item: freqDict) {
-		cout<< "    " << left << setw(20) << item.first << right
-			<< setw(5) << item.second << " || ";
+    cout << "    " << title << "\n" << setprecision(3);
 
-		if (counter++ % 3 == 0) {
-			cout << "\n";
-		} // if
+    int counter = 1;
+    for (const auto& item : freqDict) {
+        cout << "    " << left << setw(20) << item.first << right
+            << setw(5) << item.second << " || ";
+        if (counter++ % 3 == 0) {
+            cout << "\n";
+        }
+    }
+    cout << "\n";
+}
 
-		r += item.second;
-	} // for item 
+// doFreqDictWords
+void App::doFreqDictWords() {
+    cls();
+    viewText("Файл " + fileName_ + ", текст для обработки:", fileName_);
+    getKey("\nНажмите для формирования словаря");
 
-	cout << "\n    Сумма частот: " << r << "\n\n";
-} // App::show 
+    try {
+        map<string, double> freqDict = TextProcessor::makeWordsFrequencyDict(fileName_);
+        show("\n\n    Частотный словарь слов текста, файл " + fileName_ + ":", freqDict);
+    }
+    catch (const exception& ex) {
+        cout << color(errColor) << "Ошибка: " << ex.what() << color(mainColor) << "\n";
+    }
 
+    getKey("\nНажмите для продолжения...");
+}
 
-// Вывод частотного словаря букв
-void App::show(const string& title, const map<char, double>& freqDict) {
-	cout << "    " << title << "\n" << setprecision(3);
+// doFreqDictLetters
+void App::doFreqDictLetters() {
+    cls();
+    viewText("Файл " + fileName_ + ", текст для обработки:", fileName_);
+    getKey("\nНажмите для формирования словаря");
 
-	int counter = 1;
-	double r = 0;
-	for (auto& item : freqDict) {
-		cout << "    " << item.first << "  "
-			<< setw(5) << item.second << " || ";
+    try {
+        map<string, double> freqDict = TextProcessor::makeLettersFrequencyDict(fileName_);
+        show("\n\n    Частотный словарь букв текста, файл " + fileName_ + ":", freqDict);
+    }
+    catch (const exception& ex) {
+        cout << color(errColor) << "Ошибка: " << ex.what() << color(mainColor) << "\n";
+    }
 
-		if (counter++ % 5 == 0) {
-			cout << "\n";
-		} // if
+    getKey("\nНажмите для продолжения...");
+}
 
-		r += item.second;
-	} // for item 
+// doSwapLines
+void App::doSwapLines() {
+    cls();
+    viewText("Файл " + fileName_ + ", текст для обработки:", fileName_);
+    getKey("\nНажмите для смены строк");
 
-	cout << "\n    Сумма частот: " << r << "\n\n";
-} // App::show 
+    try {
+        fstream in(fileName_, ios::in);
+        if (!in.is_open()) throw runtime_error(("Ошибка открытия " + fileName_).c_str());
+        in.imbue(locale(".1251"));
+
+        vector<string> lines;
+        string line;
+        while (getline(in, line)) {
+            lines.push_back(line);
+        }
+        in.close();
+
+        for (size_t i = 0; i + 1 < lines.size(); i += 2) {
+            swap(lines[i], lines[i + 1]);
+        }
+
+        string outFile = "swap.txt";
+        ofstream out(outFile);
+        if (!out.is_open()) throw runtime_error(("Ошибка записи в " + outFile).c_str());
+        out.imbue(locale(".1251"));
+        for (const auto& l : lines) {
+            out << l << "\n";
+        }
+        out.close();
+
+        cout << "Строки поменяны, сохранено в " << outFile << "\n";
+        cls();
+        viewText("Результат в " + outFile + ":", outFile);
+    }
+    catch (const exception& ex) {
+        cout << color(errColor) << "Ошибка: " << ex.what() << color(mainColor) << "\n";
+    }
+
+    getKey("\nНажмите для продолжения...");
+}
+
+// doWordsCapitalize
+void App::doWordsCapitalize() {
+    cls();
+    viewText("Файл " + fileName_ + ", текст для обработки:", fileName_);
+    getKey("\nНажмите для capitalize");
+
+    try {
+        fstream in(fileName_, ios::in);
+        if (!in.is_open()) throw runtime_error(("Ошибка открытия " + fileName_).c_str());
+        in.imbue(locale(".1251"));
+
+        vector<string> lines;
+        string line;
+        while (getline(in, line)) {
+            lines.push_back(line);
+        }
+        in.close();
+
+        vector<string> newLines;
+        for (auto l : lines) {
+            stringstream ss(l);
+            string newL, word;
+            while (ss >> word) {
+                if (!word.empty()) {
+                    word[0] = toupper(static_cast<unsigned char>(word[0]));
+                    transform(word.begin() + 1, word.end(), word.begin() + 1, [](unsigned char c) { return tolower(c); });
+                }
+                newL += word + " ";
+            }
+            if (!newL.empty()) newL.pop_back();
+            newLines.push_back(newL);
+        }
+
+        string outFile = "capitalize.txt";
+        ofstream out(outFile);
+        if (!out.is_open()) throw runtime_error(("Ошибка записи в " + outFile).c_str());
+        out.imbue(locale(".1251"));
+        for (const auto& l : newLines) {
+            out << l << "\n";
+        }
+        out.close();
+
+        cout << "Слова в capitalize формате, сохранено в " << outFile << "\n";
+        cls();
+        viewText("Результат в " + outFile + ":", outFile);
+    }
+    catch (const exception& ex) {
+        cout << color(errColor) << "Ошибка: " << ex.what() << color(mainColor) << "\n";
+    }
+
+    getKey("\nНажмите для продолжения...");
+}
+
+// doOrderByLen
+void App::doOrderByLen() {
+    cls();
+    viewText("Файл " + fileName_ + ", текст для обработки:", fileName_);
+    getKey("\nНажмите для упорядочивания по длине");
+
+    try {
+        fstream in(fileName_, ios::in);
+        if (!in.is_open()) throw runtime_error(("Ошибка открытия " + fileName_).c_str());
+        in.imbue(locale(".1251"));
+
+        vector<string> lines;
+        string line;
+        while (getline(in, line)) {
+            lines.push_back(line);
+        }
+        in.close();
+
+        sort(lines.begin(), lines.end(), [](const string& a, const string& b) { return a.length() < b.length(); });
+
+        string outFile = "orderByLen.txt";
+        ofstream out(outFile);
+        if (!out.is_open()) throw runtime_error(("Ошибка записи в " + outFile).c_str());
+        out.imbue(locale(".1251"));
+        for (const auto& l : lines) {
+            out << l << "\n";
+        }
+        out.close();
+
+        cout << "Строки упорядочены по длине, сохранено в " << outFile << "\n";
+        cls();
+        viewText("Результат в " + outFile + ":", outFile);
+    }
+    catch (const exception& ex) {
+        cout << color(errColor) << "Ошибка: " << ex.what() << color(mainColor) << "\n";
+    }
+
+    getKey("\nНажмите для продолжения...");
+}
+
+// doOrderWordsInLines
+void App::doOrderWordsInLines() {
+    cls();
+    viewText("Файл " + fileName_ + ", текст для обработки:", fileName_);
+    getKey("\nНажмите для упорядочивания слов в строках");
+
+    try {
+        fstream in(fileName_, ios::in);
+        if (!in.is_open()) throw runtime_error(("Ошибка открытия " + fileName_).c_str());
+        in.imbue(locale(".1251"));
+
+        vector<string> lines;
+        string line;
+        while (getline(in, line)) {
+            lines.push_back(line);
+        }
+        in.close();
+
+        vector<string> newLines;
+        for (const auto& l : lines) {
+            vector<string> words = TextProcessor::splitBySpace(l);
+            sort(words.begin(), words.end(), [](const string& a, const string& b) {
+                string la = a, lb = b;
+                transform(la.begin(), la.end(), la.begin(), [](unsigned char c) { return tolower(c); });
+                transform(lb.begin(), lb.end(), lb.begin(), [](unsigned char c) { return tolower(c); });
+                return la < lb;
+                });
+            string newL;
+            for (const auto& w : words) {
+                newL += w + " ";
+            }
+            if (!newL.empty()) newL.pop_back();
+            newLines.push_back(newL);
+        }
+
+        string outFile = "orderliness.txt";
+        ofstream out(outFile);
+        if (!out.is_open()) throw runtime_error(("Ошибка записи в " + outFile).c_str());
+        out.imbue(locale(".1251"));
+        for (const auto& l : newLines) {
+            out << l << "\n";
+        }
+        out.close();
+
+        cout << "Слова в строках упорядочены по алфавиту, сохранено в " << outFile << "\n";
+        cls();
+        viewText("Результат в " + outFile + ":", outFile);
+    }
+    catch (const exception& ex) {
+        cout << color(errColor) << "Ошибка: " << ex.what() << color(mainColor) << "\n";
+    }
+
+    getKey("\nНажмите для продолжения...");
+}

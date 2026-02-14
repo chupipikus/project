@@ -126,7 +126,7 @@ void TextProcessor::capitalizeText(const string& fileName, const string& result)
 		} // for word
 
 		// формирование строки из преобразованных слов
-		line = TextProcessor::join(" ", words);
+		line = join(" ", words);
 	} // for line
 
 	writeLines(result, text);
@@ -157,7 +157,7 @@ void TextProcessor::orderLines(const string& fileName, const string& result) {
 		auto words = splitBySpace(line);
 		sort(words.begin(), words.end());
 
-		line = TextProcessor::join(" ", words);
+		line = join(" ", words);
 	} // for line
 
 	writeLines(result, text);

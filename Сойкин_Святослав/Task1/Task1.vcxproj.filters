@@ -8,9 +8,6 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Infrastructure</Filter>
     </ClCompile>
-    <ClCompile Include="VectorProcess.cpp">
-      <Filter>Models</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -28,9 +25,6 @@
     <ClInclude Include="Palette.h">
       <Filter>Infrastructure\Colors</Filter>
     </ClInclude>
-    <ClInclude Include="VectorProcess.h">
-      <Filter>Models</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="App">
@@ -41,9 +35,6 @@
     </Filter>
     <Filter Include="Infrastructure\Colors">
       <UniqueIdentifier>{fe95d4e5-d730-4788-846e-1d99223243a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Models">
-      <UniqueIdentifier>{0d3a61fd-95dd-4e81-943f-0481b4c84d07}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

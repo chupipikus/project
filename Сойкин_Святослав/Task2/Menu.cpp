@@ -29,8 +29,25 @@ void Menu::currentColor(short value) { currentColor_ = value; }
 
 // возвращает максимальную длину текста пункта меню
 int Menu::getMaxLen() {
+	auto toConsole = [](const string &s)->string{
+#if CODE_PAGE == 1251
+		if (s.empty()) return s;
+		int wlen = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, nullptr, 0);
+		if (wlen == 0) return s;
+		vector<wchar_t> wbuf(wlen);
+		MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, wbuf.data(), wlen);
+		int len = WideCharToMultiByte(1251, 0, wbuf.data(), -1, nullptr, 0, nullptr, nullptr);
+		if (len == 0) return s;
+		vector<char> buf(len);
+		WideCharToMultiByte(1251, 0, wbuf.data(), -1, buf.data(), len, nullptr, nullptr);
+		return string(buf.data(), len - 1);
+#else
+		return s;
+#endif
+	};
+
 	return (int)max_element(menuItems_.begin(), menuItems_.end(),
-		[](MenuItem& mi1, MenuItem& mi2) { return mi1.text().length() < mi2.text().length();  })->text().length();
+		[&toConsole](MenuItem& mi1, MenuItem& mi2) { return toConsole(mi1.text()).length() < toConsole(mi2.text()).length(); })->text().length();
 } // Menu::getMaxLen
 
 
@@ -42,11 +59,29 @@ void Menu::show() {
 
 	// вывод в заданные позиции, все элемены одинаковой ширины,
 	// а также выводим 4хпробельные поля перед и после текста
+	auto toConsole = [](const string &s)->string{
+#if CODE_PAGE == 1251
+		if (s.empty()) return s;
+		int wlen = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, nullptr, 0);
+		if (wlen == 0) return s;
+		vector<wchar_t> wbuf(wlen);
+		MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, wbuf.data(), wlen);
+		int len = WideCharToMultiByte(1251, 0, wbuf.data(), -1, nullptr, 0, nullptr, nullptr);
+		if (len == 0) return s;
+		vector<char> buf(len);
+		WideCharToMultiByte(1251, 0, wbuf.data(), -1, buf.data(), len, nullptr, nullptr);
+		return string(buf.data(), len - 1);
+#else
+		return s;
+#endif
+	};
+
 	int rowOffset = 0;
 	for (auto mi:menuItems_) {
+		string text = toConsole(mi.text());
 		cout<< pos(startPosition_.X, startPosition_.Y + rowOffset++)
 			<< color(mi.isSelected()?currentColor_:itemColor_)
-			<< "    " << setw(maxLen)<< mi.text() << "    ";
+			<< "    " << setw(maxLen)<< text << "    ";
 	} // for mi
 	cout << right;
 } // Menu::show

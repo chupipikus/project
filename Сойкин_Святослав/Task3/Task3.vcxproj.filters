@@ -34,12 +34,6 @@
     <ClInclude Include="FKeys.h">
       <Filter>Infrastructure</Filter>
     </ClInclude>
-    <ClInclude Include="TicketFactory.h">
-      <Filter>Models</Filter>
-    </ClInclude>
-    <ClInclude Include="Ticket.h">
-      <Filter>Models</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="App">
@@ -84,11 +78,5 @@
       <Filter>Models</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Ticket.cpp">
-      <Filter>Models</Filter>
-    </ClCompile>
-    <ClCompile Include="TicketFactory.cpp">
-      <Filter>Models</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
