@@ -3,23 +3,25 @@
 // для использования старых, небезопасных функций, например sprintf()
 #define _CRT_SECURE_NO_WARNINGS
 
-#ifdef _MSC_VER
 // использование математических констант, современный стиль
 #include <corecrt_math_defines.h>
-#include <Windows.h> // для использования функций WinAPI
-#include <conio.h>
-#endif
 
 #include <iostream>  // этот файл делает доступными инженерные функции  
 #include <iomanip>   // для манипуляторов вывода setw(), setprecision()
+#include <Windows.h> // для использования функций WinAPI
+#include <conio.h>
 #include <sstream>   // для объекта ostringstream
 #include <fstream>
 
 #include <vector>
 #include <algorithm>
 #include <numeric>
+#include <map>
 
 using namespace std;
+
+// объявление символической константы - кодовой страницы
+constexpr auto CODE_PAGE = 1251;
 
 // объявление символической константы - кодовой страницы
 constexpr auto CODE_PAGE = 1251;
