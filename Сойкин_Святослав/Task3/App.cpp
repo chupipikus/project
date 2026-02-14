@@ -14,13 +14,13 @@ App::App(const list<Ticket> tickets, const string& fileName) {
 	fileName_ = fileName;
 } // App::App
 
-// Отобразить заголовок и все билеты
+//     
 void App::show(const string& title) {
 	show(title, tickets_);
 } // App::show
 
 
-// Показать список билетов в табличном виде
+//      
 void App::show(const string& title, list<Ticket>& data) {
 	cout << title << "\n" << Ticket::header();
 
@@ -32,7 +32,7 @@ void App::show(const string& title, list<Ticket>& data) {
 } // App::show
 
 
-// Показать вектор билетов в табличном виде
+//      
 void App::show(const string& title, vector<Ticket>& data) {
 	cout << title << "\n" << Ticket::header();
 
@@ -44,12 +44,12 @@ void App::show(const string& title, vector<Ticket>& data) {
 } // App::show
 
 
-// запись коллекции заявок в бинарный файл
+//      
 void App::save() {
 	fstream fs(fileName_, ios::out | ios::binary);
 
 	if (!fs.is_open()) {
-		throw exception(("App: Ошибка открытия файла " + fileName_ + " для записи").c_str());
+		throw exception(("App:    " + fileName_ + "  ").c_str());
 	} // if
 
 	for (auto datum : tickets_) {
@@ -60,7 +60,7 @@ void App::save() {
 } // App::save
 
 
-// Загрузить билеты из бинарного файла (чтение записей до конца файла)
+//      (    )
 void App::load() {
 	fstream fs(fileName_, ios::in | ios::binary);
 
@@ -80,28 +80,28 @@ void App::load() {
 } // App::load
 
 
-// Обменять первую и последнюю записи в бинарном файле
+//        
 void App::firstLastSwap() {
 	fstream fs(fileName_, ios::in | ios::out | ios::binary);
 
 	if (!fs.is_open()) {
-		throw exception(("App: Ошибка открытия файла " + fileName_ + " для чтения/записи").c_str());
+		throw exception(("App:    " + fileName_ + "  /").c_str());
 	} // if
 
-	// прочитать первую запись
+	//   
 	Ticket first;
 	first.load(fs);
 
-	// Перейти к последней записи и прочитать её
+	//       
 	fs.seekg(-Ticket::recordLen(), ios::end);
 	Ticket last;
 	last.load(fs);
 
-	// Записать последнюю запись в начало файла (обмен)
+	//       ()
 	fs.seekp(0, ios::beg);
 	last.save(fs);
 
-	// Записать первую запись в конец файла
+	//      
 	fs.seekp(-Ticket::recordLen(), ios::end);
 	first.save(fs);
 
@@ -109,26 +109,26 @@ void App::firstLastSwap() {
 } // App::firstLastSwap
 
 
-// Найти запись с самой ранней датой и с самой поздней датой и обменять их
+//              
 void App::earliestLatestSwap() {
 	fstream fs(fileName_, ios::in | ios::out | ios::binary);
 
 	if (!fs.is_open()) {
-		throw exception(("App: Ошибка открытия файла " + fileName_ + " для чтения/записи").c_str());
+		throw exception(("App:    " + fileName_ + "  /").c_str());
 	} // if
 
-	// Для повышения производительности, поиска самой ранней и самой поздней
-	// записей за один проход реализуем "божественный" цикл
+	//   ,      
+	//      "" 
 	Ticket earliest;
 	earliest.load(fs);
 	Ticket latest = earliest;
 
 	int posEarliest = 0, posLatest = 0;
 
-	// Цикл до достижения конца файла, при достижении конца
-	// файла возникает ситуация EOF (End Of File), т.е. ошибка
-	// и все файловые операции блокируются до сброса признака
-	// ошибки
+	//     ,   
+	//    EOF (End Of File), .. 
+	//        
+	// 
 	for (int i = 1; !fs.eof(); i++, fs.peek()) {
 		Ticket ticket;
 		ticket.load(fs);
@@ -146,10 +146,10 @@ void App::earliestLatestSwap() {
 		++i;
 	}
 
-	// Сброс состояния потока после чтения перед записью
+	//       
 	fs.clear();
 
-	// Записать найденные записи в места друг друга
+	//       
 	fs.seekp(posEarliest*Ticket::recordLen(), ios::beg);
 	latest.save(fs);
 
@@ -160,9 +160,9 @@ void App::earliestLatestSwap() {
 } // App::earliestLatestSwap
 
 
-// Генерация коллекции заявок фабричным методом 
+//      
 void App::doGenerate() {
-	showNavBarMessage(hintColor, "    Генерация коллекции заявок фабричным методом");
+	showNavBarMessage(hintColor, "        ");
 
 	tickets_ = list<Ticket>(getRand(12, 18));
 	int id = getRand(1, 9) * 1000;
@@ -170,42 +170,42 @@ void App::doGenerate() {
 		return TicketFactory::create(id++);
 	});
 
-	show("    Сформирована коллекция заявок на авиабилеты");
+	show("        ");
 } // App::doGenerate
 
 
-// Вывод текущего состояния коллекции заявок
+//     
 void App::doShowAll() {
-	showNavBarMessage(hintColor, "  Вывод текущего состояния коллекции заявок");
+	showNavBarMessage(hintColor, "      ");
 
-	show("    Коллекция заявок на авиабилеты:");
+	show("       :");
 } // App::doShowAll
 
 
-// Добавление заявки, сформированной фабричным методом
+//  ,   
 void App::doAddByFactory() {
 	showNavBarMessage(hintColor, "");
 
-	// добавление
+	// 
 	int idMax = max_element(tickets_.begin(), tickets_.end(), 
 		[](const Ticket& t1, const Ticket& t2) { return t1.id() < t2.id(); })->id();
 	auto ticket = TicketFactory::create(idMax + 1);
 	tickets_.emplace_back(ticket);
 
-	// Вывести измененную коллекцию
-	show("    В коллекцию добавлена заявка с ид. "s + to_string(ticket.id()));
+	//   
+	show("         . "s + to_string(ticket.id()));
 } // App::doAddByFactory
 
 
-// Удаление заявки по идентификатору
+//    
 void App::doDeleteById() {
-	showNavBarMessage(hintColor, "  Удаление заявки по идентификатору");
+	showNavBarMessage(hintColor, "     ");
 
-	show("    Коллекция заявок на авиабилеты:");
+	show("       :");
 
-	// ввод идентфикатора для удаления записи
+	//     
 	int id;
-	cout<< "\n    Идентфикатор записи для удаления: "
+	cout<< "\n       : "
 		<< color(infoColor) << setw(31) << " ";
 	COORD position;
 	getXY(&position);
@@ -213,37 +213,37 @@ void App::doDeleteById() {
 	checkInputFormat(cin);
 
 	if (id <= 0) {
-		throw exception("App. Некорректное значение идентификатора");
+		throw exception("App.   ");
 	} // if
 
 	cout << pos(4, position.Y) << setw(80) << " " << pos(4, position.Y);
 
-	// получение итератора для удаления из коллекции
+	//      
 	auto it = find_if(tickets_.begin(), tickets_.end(),
 		[id](const Ticket& ticket) {
 			return ticket.id() == id;
 		}
 	);
 	if (it == tickets_.end()) {
-		cout<< color(errColor) << "    Не найдена запись с ид. " 
+		cout<< color(errColor) << "        . " 
 			<< id << "    " << color(mainColor);
 		return;
 	} // if
 
 	tickets_.erase(it);
-	show("    Из коллекции удалена заявка с ид. "s + to_string(id) + ":"s);
+	show("         . "s + to_string(id) + ":"s);
 } // App::doDeleteById
 
 
-// Отбор заявок по заданному номеру рейса
+//      
 void App::doFindByFlight() {
-	showNavBarMessage(hintColor, "   Отбор заявок по заданному номеру рейса");
+	showNavBarMessage(hintColor, "        ");
 
-	show("    Коллекция заявок на авиабилеты:");
+	show("       :");
 
-	// ввод номера рейса для отбора записей
+	//      
 	string flight;
-	cout << "\n    Номер рейса для отбора заявок: "
+	cout << "\n        : "
 		<< color(infoColor) << setw(31) << " ";
 	COORD position;
 	cin.ignore(cin.rdbuf()->in_avail(), '\n');
@@ -253,29 +253,29 @@ void App::doFindByFlight() {
 	cout << nocursor << color(mainColor);
 
 	if (flight.empty()) {
-		throw exception("App. Не указан номер рейса для отбора заявок");
+		throw exception("App.       ");
 	} // if
 
 	cout << pos(4, position.Y) << setw(80) << " " << pos(4, position.Y);
 
-	// отбор заявок на заданный номер рейса
+	//      
 	vector<Ticket> result;
 	copy_if(tickets_.begin(), tickets_.end(), back_inserter(result), [flight](const Ticket& ticket) {
 		return ticket.flight() == flight;
 	});
-	show("    Из коллекции выбраны заявка/заявки на рейс номер '"s + flight + "':"s, result);
+	show("       /    '"s + flight + "':"s, result);
 } // App::doFindByFlight
 
 
-// Отбор заявок по фамилии и инициалам пассажира
+//       
 void App::doFindbyPax() {
-	showNavBarMessage(hintColor, "  Отбор заявок по фамилии и инициалам пассажира");
+	showNavBarMessage(hintColor, "        ");
 
-	show("    Коллекция заявок на авиабилеты:");
+	show("       :");
 
-	// ввод фамилии и инициалов пассажира для отбора записей
+	//        
 	string pax;
-	cout << "\n    Фамилия и иницивлы пассажира для отбора заявок: "
+	cout << "\n          : "
 		<< color(infoColor) << setw(31) << " ";
 	COORD position;
 	getXY(&position);
@@ -285,99 +285,99 @@ void App::doFindbyPax() {
 	cout << nocursor << color(mainColor);
 
 	if (pax.empty()) {
-		throw exception("App. Не указан пассажир для отбора заявок");
+		throw exception("App.      ");
 	} // if
 
 	cout << pos(4, position.Y) << setw(80) << " " << pos(4, position.Y);
 
-	// отбор заявок пассажира
+	//   
 	vector<Ticket> result;
 	copy_if(tickets_.begin(), tickets_.end(), back_inserter(result), [pax](const Ticket &ticket) {
 		return ticket.pax() == pax;
 	});
-	show("    Из коллекции выбраны заявка/заявки пассажира "s + pax + ":"s, result);
+	show("       /  "s + pax + ":"s, result);
 } // App::doFindbyPax
 
 
-// Упорядочить заявки по идентификатору
+//    
 void App::doOrderById() {
 	showNavBarMessage(hintColor, "");
 
 	tickets_.sort([](const Ticket& t1, const Ticket& t2) {
 		return t1.id() < t2.id();
 	});
-	show("    Заявки упорядочены по идентификаторам:");
+	show("       :");
 } // App::doOrderById
 
 
-// Упорядочить заявки по желаемой дате вылета
+//      
 void App::doOrderByDepartureDate() {
-	showNavBarMessage(hintColor, "  Упорядочить заявки по желаемой дате вылета");
+	showNavBarMessage(hintColor, "       ");
 	
 	tickets_.sort([](const Ticket& t1, const Ticket& t2) {
 		return t1.departureDate() < t2.departureDate();
 	});
-	show("    Заявки упорядочены по желаемой дате вылета:");
+	show("         :");
 } // App::doOrderByDepartureDate
 
 
-// Упорядочить заявки по пункту назначения
+//     
 void App::doOrderByDestination() {
-	showNavBarMessage(hintColor, "  Упорядочить заявки по пункту назначения");
+	showNavBarMessage(hintColor, "      ");
 
 	tickets_.sort([](const Ticket& t1, const Ticket& t2) {
 		return t1.destination() < t2.destination();
 	});
-	show("    Заявки упорядочены по пункту назначения:");
+	show("        :");
 } // App::doOrderByDestination
 
 
-// Запись коллекции заявок на авиабилеты в бинарный файл
+//        
 void App::doSaveToBinary() {
-	showNavBarMessage(hintColor, "  Запись коллекции заявок на авиабилеты в бинарный файл");
+	showNavBarMessage(hintColor, "         ");
 	
 	save();
-	show("    Коллекция сохранена в бинарный файл '" + fileName_ + "':");
+	show("         '" + fileName_ + "':");
 } // App::doSaveToBinary
 
 
-// Чтение коллекции заявок на авиабилеты из бинарного файла
+//        
 void App::doLoadFrombinary() {
 	showNavBarMessage(hintColor, "");
 
 	load();
-	show("    Коллекция восстановлнена из бинарного файла '" + fileName_ + "':");
+	show("         '" + fileName_ + "':");
 } // App::doLoadFrombinary
 
 
-// Обмен первой и последней записи в бинарном файле
+//        
 void App::doFirstLastSwap() {
-	showNavBarMessage(hintColor, "Обмен первой и последней записи в бинарном файле");
+	showNavBarMessage(hintColor, "       ");
 
-	// загрузить и показать данные в файле до обмена
+	//        
 	load();
-	show("    Данные в файле до обмена первой и последней записей:");
+	show("            :");
 	firstLastSwap();
 	
-	// загрузить и показать данные в файле после обмена
+	//        
 	load();
-	show("\n\n    Данные в файле после обмена первой и последней записей:");
+	show("\n\n            :");
 } // App::doFirstLastSwap
 
 
-// Обмен первых записей с самыми ранними и поздними датами
+//         
 void App::doEarliestLatestSwap() {
-	showNavBarMessage(hintColor, "  Обмен первых записей с самыми ранними и поздними датами");
+	showNavBarMessage(hintColor, "          ");
 
-	// загрузить данные из файла до обмена
+	//      
 	load();
-	show("    Данные в файле до обмена самой ранней и самой поздней записей:");
+	show("              :");
 	
-	// обмен по заданию
+	//   
 	earliestLatestSwap();
 
-	// загрузить и показать данные в файле после обмена
+	//        
 	load();
-	show("\n\n    Данные в файле после обмена самой ранней и самой поздней записей:");
+	show("\n\n              :");
 } // App::doEarliestLatestSwap
 #pragma endregion

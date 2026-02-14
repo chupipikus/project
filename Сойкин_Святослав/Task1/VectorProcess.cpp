@@ -37,7 +37,7 @@ int VectorProcess::numberNegatives() {
 // Количество элементов вектора, не попадающих в интервал [a, b], введенный с клавиатуры
 int VectorProcess::numberNotInRange(float a, float b) {
 	return count_if(data_.begin(), data_.end(), 
-		[a, b](float item) { return a > item || item > b; });
+		[a, b](float item) { return a > item or item > b; });
 } // VectorProcess::numberNotInRange
 
 
@@ -102,7 +102,7 @@ void VectorProcess::orderByAbs() {
 // значений [a, b] в конец вектора
 void VectorProcess::orderByNotInRangeLast(float a, float b) {
 	sort(data_.begin(), data_.end(), [a, b](float x, float y) {
-		return a <= x && x <= b && !(a <= y && y <= b);
+		return a <= x && x <= b and (a > y or y > b);
 	});
 } // VectorProcess::orderByNotInRangeLast
 
@@ -131,13 +131,11 @@ void VectorProcess::loadFromBinary(const string& fileName) {
 		throw exception(("VectorProcess: Ошибка открытия файла " + fileName + " для чтения").c_str());
 	} // if
 
-	data_.clear();
-	while (fs.peek() != EOF) {
+	for (data_.clear(); !fs.eof(); fs.peek()) {
 		float datum;
 		fs.read((char*)&datum, sizeof(datum));
-		if (fs.gcount() != sizeof(datum)) break;
 		data_.emplace_back(datum);
-	} // while
+	} // for datum
 
 	fs.close();
-} // VectorProcess::loadFromBinary
+} // VectorProcess::loadFromFile

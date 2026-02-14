@@ -1,33 +1,42 @@
 #pragma once
 #include "pch.h"
 
-// Обработка текстовых файлов: частотный анализ и трансформация текста
-class TextProcessor {
+
+class TextProcessor
+{
+	// возвращает вектор слов из строки, состоящей из русских букв,
+	// слова разделяются одним или несколкими пробелами
+	static vector<string> splitBySpace(const string &line);
+
+	// чтение текста в вектор
+	static vector<string> readLines(const string &fileName);
+
+	// запись вектора в файл
+	static void writeLines(const string &fileName, const vector<string> &text);
+
+	// соединение строк из вектора через разделиель
+	static string join(const string &delimeter, const vector<string> tokens);
 
 public:
-	// Вспомогательный метод: разбить строку по пробелам
-	static vector<string> splitBySpace(const string& line);
-	
-	// Формирование частотного словаря слов (слово -> частота)
-	static map<string, double> makeWordsFrequencyDict(const string& fileName);
-	
-	// Формирование частотного словаря букв (буква -> частота)
+
+	// Сформировать частотный словарь
+	static map<string, double> makeWordsFrequencyDict(const string &fileName);
+
+	// Сформировать частотный словарь букв
 	static map<char, double> makeLettersFrequencyDict(const string& fileName);
 
-	// Обработка: поменять местами каждые две соседние строки
-	static void swapLines(const string& fileName, const string& result);
+	// Обработка файла, в тексте поменять местами каждые две соседние строки,
+	// сохранить измененный текст в файл result
+	static void swapLines(const string &fileName, const string &result);
 
-	// Обработка: привести первые буквы слов к верхнему регистру
+	// Обработка файла, в тексте все слова перевести в регистр Capitalize,
+	// сохранить измененный текст в файл result
 	static void capitalizeText(const string& fileName, const string& result);
 
-	// Обработка: упорядочить строки по длине
-	static void orderByLen(const string& fileName, const string& result);
+	// Упорядочить текст по длине строк, сохранить измененный текст в файл result
+	static void orderByLen(const string &fileName, const string &result);
 
-	// Обработка: упорядочить слова в каждой строке
-	static void orderLines(const string& fileName, const string& result);
-
-private:
-	// Вспомогательные функции
-	static vector<string> readLines(const string& fileName);
-	static void writeLines(const string& fileName, const vector<string>& lines);
+	// Упорядочить слоыв в строках по алфавиту, сохранить измененный текст в файл result
+	static void orderLines(const string& fileName, const string &result);
 };
+

@@ -76,6 +76,7 @@ list<Payer> Payers::selectBySumRange(double low, double high) const {
 		return a.getPhone() < b.getPhone(); 
 	});
 	
+	return result;
 } // Payers::selectBySumRange
 
 

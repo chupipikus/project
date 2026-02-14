@@ -9,9 +9,9 @@ struct Request : public Object {
     char passenger[31];
     Date date;
 
-    static Request createFactory(int id);  // Фабричный метод для создания/инициализации
+    static Request createFactory(int id);  //    /
 
-    // Сохранение/загрузка в бинарном формате с фиксированной длиной
+    // /      
     void writeBinary(ostream& os) const;
     static bool readBinary(istream& is, Request& out);
     static size_t binarySize() { return sizeof(int) + 31 + 16 + 31 + 3 * sizeof(short); }

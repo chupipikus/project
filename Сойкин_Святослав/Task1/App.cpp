@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Utils.h"
 #include "App.h"
-#include <locale>
 
 App::App() :App(VectorProcess(), "vector.bin") {} // App::App
 
@@ -11,31 +10,31 @@ App::App(const VectorProcess& vectorProcess, const string& fileName) {
 } // App::App
 
 
-// Выполняет обработку вектора: ввод интервала, сохранение, вычисление статистик и вывод/фильтрацию/сортировку результатов.
+// Обработка по заданию
 void App::doProcess() {
 	showNavBarMessage(hintColor, "    Применение алгоритмов для обработки вектора float");
 
 	show("    Вектор для обработки: ");
 
-	// Читает интервал выбора [a,b] от пользователя
+	// Ввод диапазона значений [a, b]
 	float a, b;
 	cout << "\n\n"
-		<< "      [a, b]: " << color(infoColor) << setw(30) << " ";
+		<< "    Границы интервала [a, b]: " << color(infoColor) << setw(30) << " ";
 	COORD coord;
 	getXY(&coord);
 	cin >> pos(coord.X - 29, coord.Y) >> a >> b >> color(mainColor);
 	checkInputFormat(cin);
 
-	// Сохраняет текущий вектор в бинарный файл
+	// Сохранить вектор в бинарном файле
 	vectorProcess_.saveToBinary(fileName_);
 
 	int negatives = vectorProcess_.numberNegatives();
 	int notInRanges = vectorProcess_.numberNotInRange(a, b);
 	
-	// Вычисляет сумму элементов до первого минимального значения
+	// сумма элементов до первого минимального
 	float sumBeforeMin = vectorProcess_.sumBeforeFirstMin();
 
-	// Вычисляет сумму элементов между первым минимумом и первым максимумом
+	// сумма элементов между первым минимальным и первым максимальным
 	float sumBetweenMinMax = vectorProcess_.sumBetweenFirstMinFirstMax();
 
 	cls();
@@ -61,29 +60,33 @@ void App::doProcess() {
 	cout<< "\n    Выборка элементов, не попадающих в интервал [" << a << ", " << b << "]\n";
 	show("    Выборка элементов: ", selected);
 
-	// Сортировка по убыванию
+	// Упорядочить элементы вектора по убыванию
+
+	// Упорядочить элементы вектора по убыванию
 	vectorProcess_.orderByDesc();
-	cout<< "\n    Сортировка элементов по убыванию \n";
-	show("    Вектор для обработки: ", a, b);
+	cout<< "\n    Вектор упорядочен по убыванию\n";
+	show("    Упорядоченный вектор: ", a, b);
 
-	// Сортировка по абсолютному значению
+	// Упорядочить вектор по возрастанию модулей элементов
 	vectorProcess_.orderByAbs();
-	cout<< "\n    Сортировка элементов по модулю  \n";
-	show("    Вектор для обработки: ", a, b);
+	cout<< "\n    Вектор упорядочен по возрастанию модулей\n";
+	show("    Упорядоченный вектор: ", a, b);
 
-	// Перева сортировка: элементы вне [a,b] в конец, сохраняя относительный порядок
+	// Упорядочить вектор по правилу – элементы, не попадающие в интервал 
+	// значений [a, b] в конец вектора
 	vectorProcess_.orderByNotInRangeLast(a, b);
-	cout<< "\n    Перестановка элементов: элементы вне [" 
-		<< a << ", " << b << "] в конец вектора  \n";
-	show("    Вектор для обработки: ", a, b);
+	cout<< "\n    Вектор упорядочен по правилу: элементы, не попадающие в интервал ["
+		<< a << ", " << b << "] в конец вектора\n";
+	show("    Упорядоченный вектор: ", a, b);
 
 	vectorProcess_.loadFromBinary(fileName_);
-	cout<< "\n\n    Восстановление вектора из файла " << fileName_ << "\n\n";
-	show("    Вектор для обработки: ", a, b);
+	cout<< "\n\n    Вектор восстановлен из файла " << fileName_ << "\n\n";
+	show("    Вектор обработки: ", a, b);
 } // App::doProcess
 
 
-// Отображает вектор с подсветкой минимума, максимума и элементов в интервале
+// Вывод вектора в консоль, по m элементов в строке, точность 
+// precision знаков
 void App::show(const string& title, float a, float b, int m, int precision) {
 	auto data = vectorProcess_.data();
 	float min = *min_element(data.begin(), data.end());
@@ -112,7 +115,7 @@ void App::show(const string& title, float a, float b, int m, int precision) {
 		} // if
 	}
 
-	// Завершение строки вывода, если последний ряд не полный
+	// Переход при незаполненной последнй строке вывода
 	if (counter % m != 0) {
 		cout << "\n";
 	} // if
@@ -130,7 +133,7 @@ void App::show(const string& title, const vector<float>& data, int m, int precis
 		} // if
 	}
 
-	// Завершение строки вывода, если последний ряд не полный
+	// Переход при незаполненной последнй строке вывода
 	if (counter % m != 0) {
 		cout << "\n";
 	} // if

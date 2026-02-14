@@ -1,128 +1,143 @@
 #include "App.h"
 #include "Utils.h"
-#include <locale>
 
 App::App() :App("test.txt") {}
 App::App(const string& fileName) {
 	fileName_ = fileName;
 } // App::App
 
-// Построить и показать частотный словарь слов из файла
+// Сформируйте частотный словарь слов текста. Ключом является слово, 
+// значением – количество таких слов в тексте, деленное на общее 
+// количество слов в тексте.
 void App::doFreqDictWords() {
 	showNavBarMessage(hintColor, "    Формирование частотного словаря слов текста");
 
-	// Отобразить исходный текст для анализа
+	// Показать файл для обработки
 	viewText("Файл " + fileName_ + ", текст для обработки:");
 
-	// Построить частотный словарь слов
+	// Сформировать частотный словарь слов
 	map<string, double> freqDict = TextProcessor::makeWordsFrequencyDict(fileName_);
 
-	// Показать результаты
+	// Вывести словарь
 	show("\n\n    Частотный словарь слов текста, файл " + fileName_ + ":", freqDict);
 } // App::doFreqDictWords
 
 
-// Построить и показать частотный словарь букв из файла
+// Сформируйте частотный словарь букв текста. Ключом является буква 
+// (регистро-независимая), значением – количество вхождений этой буквы
+// в тексте, деленное на общее количество букв в тексте.
 void App::doFreqDictLetters() {
 	showNavBarMessage(hintColor, "    Формирование частотного словаря букв текста");
 
-	// Отобразить исходный текст для анализа
+	// Показать файл для обработки
 	viewText("Файл " + fileName_ + ", текст для обработки:");
 
-	// Построить частотный словарь букв
+	// Сформировать частотный словарь букв
 	map<char, double> freqDict = TextProcessor::makeLettersFrequencyDict(fileName_);
 
-	// Показать результаты
+	// Вывести словарь
 	show("\n\n    Частотный словарь букв текста, файл " + fileName_ + ":", freqDict);
 } // App::doFreqDictLetters
 
 
-// Поменять местами строки в файле и показать результат
+// Поменять местами в тексте каждые две соседние строки, измененный текст 
+// сохранить в файле swap.tx
 void App::doSwapLines() {
 	showNavBarMessage(hintColor, "    Поменять местами в тексте каждые две соседние строки");
 
-	// Показать исходный файл
+	// Показать файл для обработки
 	viewText("Файл " + fileName_ + ", текст для обработки:");
 
-	// Создать файл с переставленными строками
+	// Обработка файла, в тексте поменять местами каждые две соседние строки,
+	// сохранить измененный текст в файл result
 	string result = "swap.txt";
 	TextProcessor::swapLines(fileName_, result);
 
-	// Показать результат
+	// Вывод обработанного файла
 	viewText("Файл " + result + ", в тексте каждые две соседние строки поменяли местами:", result);
 } // App::doSwapLines
 
 
-// Привести первые буквы слов к верхнему регистру и показать результат
+// Перевести все слова в тексте в формат: первая буква верхнего регистра, 
+// остальные буквы в нижнем регистре (Это Пример Такого Формата), 
+// сохранить текст в файле capitalize.txt 
 void App::doWordsCapitalize() {
 	showNavBarMessage(hintColor, "    Все слова текста перевести в регистр Capitalize, запись в файл");
 
-	// Показать исходный файл
+	// Показать файл для обработки
 	viewText("Файл " + fileName_ + ", текст для обработки:");
 
-	// Записать результат в новый файл
+	// Обработка файла, в тексте все слова перевести в регистр Capitalize,
+	// сохранить измененный текст в файл result
 	string result = "capitalize.txt";
 	TextProcessor::capitalizeText(fileName_, result);
 
-	// Показать результат
+	// Вывод обработанного файла
 	viewText("Файл " + result + ", в тексте каждые две соседние строки поменяли местами:", result);
 } // App::doWordsCapitalize
 
 
-// Упорядочить слова по длине и показать результат (orderByLen.txt)
+// Упорядочить строки текста по длине, сохранить текст в файл с именем 
+// orderByLen.txt
 void App::doOrderByLen() {
-	showNavBarMessage(hintColor, "    Упорядочить строки текста по длине");
+	showNavBarMessage(hintColor, "    Упорчдочить строки текста по длине, запись в файл");
 
-	// Показать исходный файл
+	// Показать файл для обработки
 	viewText("Файл " + fileName_ + ", текст для обработки:");
 
-	// Создать файл с упорядоченными по длине словами
+	// Упорядочить текст по длине строк, сохранить измененный текст в файл result
 	string result = "orderByLen.txt";
 	TextProcessor::orderByLen(fileName_, result);
 
-	// Показать результат
-	viewText("Файл " + result + ", строки упорядочены по длине:", result);
+	// Вывод обработанного файла
+	viewText("Файл " + result + ", текст упорядочен по длине строк:", result);
 } // App::doOrderByLen
 
 
-// Упорядочить слова в каждой строке и показать результат (orderlines.txt)
+// В каждой строке текста упорядочить слова по алфавиту, оставить между 
+// словами по одному пробелу, сохранить измененный текст в файле с именем 
+// orderlines.txt 
 void App::doOrderWordsInLines() {
-	showNavBarMessage(hintColor, "    Упорядочить слова в каждой строке текста");
+	showNavBarMessage(hintColor, "    Упорчдочить слова а строках текста по алфавиту, запись в файл");
 
-	// Показать исходный файл
+	// Показать файл для обработки
 	viewText("Файл " + fileName_ + ", текст для обработки:");
 
-	// Сохранить результат в файл
+	// Упорядочить слоыв в строках \по алфавиту, сохранить измененный текст в файл result
 	string result = "orderlines.txt";
 	TextProcessor::orderLines(fileName_, result);
 
-	// Показать результат
-	viewText("Файл " + result + ", слова в каждой строке упорядочены:", result);
+	// Вывод обработанного файла
+	viewText("Файл " + result + ", слова в чтроках упорядочены по алфавиту:", result);
 } // App::doOrderWordsInLines
 
 
 // -------------------------------------------------------
 
 void App::viewText(const string & title, const string &fileName) {
-	cout<< "    " << title << "\n"
-		<< "    +" << setfill('-') << setw(92) << "-" << "+" 
+	cout<< "     " << title << "\n"
+		<< "     +" << setfill('-') << setw(92) << "-" << "+" 
 		<< setfill(' ') << "\n";
 
 	fstream fs(fileName, ios::in);
 
 	if (!fs.is_open()) {
-		throw exception(("App: cannot open " + fileName + " for reading").c_str());
+		throw exception(("App: Ошибка открытия файла " + fileName + " для чтения").c_str());
 	} // if
 
-	// Читать файл в кодировке CP1251 и выводить строки
+	// задать кодировку потока вывода CP1251  
 	fs.imbue(locale(".1251"));
 
 	int row = 1;
-	string line;
-	while (getline(fs, line)) {
+	while (!fs.eof()) {
+		string line;
+		getline(fs, line);
+
 		cout << " " << setfill('0') << setw(3) << row++ << setfill(' ')
 			<< " | " << left << setw(90) << line << right << " |\n";
-	}
+
+		fs.peek();
+	} // ehile
 
 	fs.close();
 	cout<< "     +" << setfill('-') << setw(92) << "-" << "+"
@@ -130,11 +145,13 @@ void App::viewText(const string & title, const string &fileName) {
 } // App::viewText
 
 
+// Делегирующий вызов для вывода файла fileName_
 void App::viewText(const string& title) {
 	viewText(title, fileName_);
 } // App::viewText
 
 
+// Вывод частотного словаря слов
 void App::show(const string& title, const map<string, double>& freqDict) {
 	cout << "    " << title << "\n" << setprecision(3);
 	
@@ -151,23 +168,26 @@ void App::show(const string& title, const map<string, double>& freqDict) {
 		r += item.second;
 	} // for item 
 
-	cout << "\n    Сумма : " << r << "\n\n";
+	cout << "\n    Сумма частот: " << r << "\n\n";
 } // App::show 
 
 
+// Вывод частотного словаря букв
 void App::show(const string& title, const map<char, double>& freqDict) {
 	cout << "    " << title << "\n" << setprecision(3);
 
 	int counter = 1;
 	double r = 0;
 	for (auto& item : freqDict) {
-		// Вывести одиночный символ (если несколько символов, выводить как есть)
-		cout << "    " << string(1, item.first) << "  "
+		cout << "    " << item.first << "  "
 			<< setw(5) << item.second << " || ";
 
-		if (counter++ % 5 == 0) cout << "\n";
-		r += item.second;
-	}
+		if (counter++ % 5 == 0) {
+			cout << "\n";
+		} // if
 
-	cout << "\n    Сумма : " << r << "\n\n";
+		r += item.second;
+	} // for item 
+
+	cout << "\n    Сумма частот: " << r << "\n\n";
 } // App::show 

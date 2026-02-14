@@ -1,6 +1,6 @@
 #pragma once
 
-// ��� ������������� ������, ������������ �������, �������� sprintf()
+//   ,  ,  sprintf()
 #define _CRT_SECURE_NO_WARNINGS
 
 #ifdef _MSC_VER
@@ -11,18 +11,18 @@
 
 #include <iostream>
 #include <iomanip>
-#include <sstream>   // ��� ������� ostringstream
-#include <fstream>   // ��� �������� ������� �����/������
+#include <sstream>   //   ostringstream
+#include <fstream>   //    /
 
 #include <vector>
 #include <algorithm>
 #include <numeric>
 
-#include <locale> // ���� �� �������� � �����������
+#include <locale> //     
 #include <map>    // for freq dict
 #include <list>
 
 using namespace std;
 
-// ���������� ������������� ��������� - ������� �������� (UTF-8)
+//    -   (UTF-8)
 constexpr auto CODE_PAGE = 1251;

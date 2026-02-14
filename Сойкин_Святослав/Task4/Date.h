@@ -3,7 +3,7 @@
 #include "Object.h"
 
 //  ласс, описывающий дату: день, мес€ц, год. 
-class Date : public Object
+class Date: public Object
 {
     short day_;   // день
     short month_; // мес€ц
@@ -13,34 +13,41 @@ class Date : public Object
     static short daysInMonth(short month, short year);
     static bool  isLeapYear(short year);
 
-    int  toJulianDays() const;
-    void toGrigorian(int julianDays);
+	int  toJulianDays() const;
+	void toGrigorian(int julianDays);
 
 public:
     // ансамбль конструкторов
-    Date() : day_(1), month_(1), year_(1970) {}
+    Date(): day_(1), month_(1), year_(1970) {}
     Date(short day, short month, short year) {
         setDate(day, month, year);
     } // Date
 
-    Date(const Date& date) = default;
+    Date(const Date &date) = default; 
     virtual ~Date() = default;
 
     // геттеры и сеттер
-    short getDay()   const { return day_; }
+    short getDay()   const { return day_;   }
     short getMonth() const { return month_; }
-    short getYear()  const { return year_; }
+    short getYear()  const { return year_;  }
 
     void setDate(short day, short month, short year);
 
-    // реализаци€ виртуального метода
-    virtual string toString() const override;
+	// реализаци€ виртуального метода
+	virtual string toString() override;
 
     // перегруженные оператор
-    // ќперации <, == дл€ добавлени€ в map, multimap, set, multiset 
-    bool operator <(const Date& date) const;
-    bool operator==(const Date& date) const;
+    bool operator <(const Date &date) const;
+    bool operator >(const Date &date) const;
+    bool operator==(const Date &date) const;
 
-    friend ostream& operator<<(ostream& os, const Date& date);
-    friend istream& operator>>(istream& is, Date& date);
+    // дораюлтка дл€ экзаменационной работы
+    Date operator+(int days);
+    static Date now();
+
+    // получение даты из юлианского количества дней
+    static Date toDate(int julianDays);
+
+    friend ostream &operator<<(ostream &os, Date &date);
+	friend istream &operator>>(istream &is, Date &date);
 };

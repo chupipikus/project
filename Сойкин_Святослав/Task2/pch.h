@@ -1,6 +1,6 @@
 #pragma once
 
-// пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ sprintf()
+// Для избежания проблем, связанные с функциями, включая sprintf()
 #define _CRT_SECURE_NO_WARNINGS
 
 #ifdef _MSC_VER
@@ -11,17 +11,12 @@
 
 #include <iostream>
 #include <iomanip>
-#include <sstream>   // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ostringstream
-#include <fstream>   // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅпїЅ
+#include <sstream>   // для работы с ostringstream
+#include <fstream>   // для операций файловой ввода/вывода
 
 #include <vector>
 #include <algorithm>
 #include <numeric>
-
-#include <locale> // пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-#include <map>    // for freq dict
+#include <locale>
 
 using namespace std;
-
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (UTF-8)
-constexpr auto CODE_PAGE = 1251;

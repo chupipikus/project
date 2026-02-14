@@ -1,8 +1,6 @@
 #include "TextProcessor.h"
-#include <locale>
-#include <cctype>
 
-// Сформировать частотный словарь слов текста
+// Сформировать частотный словарь
 map<string, double> TextProcessor::makeWordsFrequencyDict(const string& fileName) {
 	map<string, double> freqDict;
 	
@@ -17,40 +15,39 @@ map<string, double> TextProcessor::makeWordsFrequencyDict(const string& fileName
 
 	// Построчное чтение и обработка файла
 	int wordsCounter = 0;
-	string line;
-	while (getline(fs, line)) {
+	for (; !fs.eof(); fs.peek()) {
+		string line;
+		getline(fs, line);
+
 		// не обрабатываем пустую строку
 		if (line.empty()) { 
 			continue; 
 		} // if
 
-		// Построчная обработка: выделение слов, нормализация,
-		// подсчет общего количества слов, заполнение словаря
+		// Построчная обработка: выделение слов, 
+		// подсчет общего количества слов,
+		// заполнение словаря
 		vector<string> words = splitBySpace(line);
-		for (auto &w : words) {
-			// нормализация слова к нижнему регистру
-			for (auto &ch : w) ch = (char)tolower((unsigned char)ch);
-			freqDict[w] += 1.0;
+		for (auto word: words) {
+			freqDict[word] += 1;
 		} // for word
 
-		wordsCounter += (int)words.size();
-	} // while
+		wordsCounter += words.size();
+	} // ehile
 
 	fs.close();
 
 	// нормирование словаря: поделить в каждой паре количество слов
 	// на общее количество слов в тексте
-	if (wordsCounter > 0) {
-		for (auto &item : freqDict) {
-			item.second /= wordsCounter;
-		} // for item
-	} // if
+	for (auto& item : freqDict) {
+		item.second /= wordsCounter;
+	} // for item
 	
 	return freqDict;
 } // TextProcessor::makeWordsFrequencyDict
 
 
-// Сформировать частотный словарь букв текста
+// Сформировать частотный словарь букв
 map<char, double> TextProcessor::makeLettersFrequencyDict(const string& fileName) {
 	map<char, double> freqDict;
 
@@ -63,23 +60,26 @@ map<char, double> TextProcessor::makeLettersFrequencyDict(const string& fileName
 	// задать кодировку потока вывода CP1251  
 	fs.imbue(locale(".1251"));
 
-	// Построчное чтение всего файла в буфер
+	// Построчное чтение и обработка файла
 	int lettersCounter = 0;
-	string line;
-	while (getline(fs, line)) {
+	for (; !fs.eof(); fs.peek()) {
+		string line;
+		getline(fs, line);
+
 		// не обрабатываем пустую строку
 		if (line.empty()) {
 			continue;
 		} // if
 
 		// Построчная обработка: подсчет общего количества букв,
-		// заполнение словаря (отключение пробелов и знаков пунктуации)
+		// заполнение словаря
 		for (auto ch : line) {
-			if (isalpha((unsigned char)ch)) {
-				char lc = (char)tolower((unsigned char)ch);
-				freqDict[lc] += 1.0;
-				lettersCounter++;
+			if (ch == ' ') {
+				continue;
 			} // if
+
+			freqDict[ch] += 1;
+			lettersCounter++;
 		} // for ch
 	} // while
 
@@ -87,144 +87,163 @@ map<char, double> TextProcessor::makeLettersFrequencyDict(const string& fileName
 
 	// нормирование словаря: поделить в каждой паре количество букв
 	// на общее количество букв в тексте
-	if (lettersCounter > 0) {
-		for (auto &item : freqDict) {
-			item.second /= lettersCounter;
-		} // for item
-	} // if
+	for (auto& item : freqDict) {
+		item.second /= lettersCounter;
+	} // for item
 
 	return freqDict;
 } // TextProcessor::makeLettersFrequencyDict
 
 
-// Поменять местами в тексте каждые две соседние строки
+// Обработка файла, в тексте поменять местами каждые две соседние строки,
+// сохранить измененный текст в файл result
 void TextProcessor::swapLines(const string& fileName, const string& result) {
-	auto text = readLines(fileName);
-	
-	// Обработка файла, в тексте поменять местами каждые две соседние строки,
-	// сохранить измененный текст в файл result
-	for (size_t i = 0; i + 1 < text.size(); i += 2) {
+	vector<string> text = readLines(fileName);
+
+	for (int i = 0; i < text.size() - 1; i += 2) {
 		swap(text[i], text[i + 1]);
 	} // for i
-	
+
 	writeLines(result, text);
 } // TextProcessor::swapLines
 
 
-// Перевести все слова в тексте в формат: первая буква верхнего регистра,
-// остальные буквы в нижнем регистре (Это Пример Такого Формата)
+// Обработка файла, в тексте все слова перевести в регистр Capitalize,
+// сохранить измененный текст в файл result
 void TextProcessor::capitalizeText(const string& fileName, const string& result) {
-	auto text = readLines(fileName);
-	
-	// Обработка файла, в тексте все слова перевести в регистр Capitalize,
-	// сохранить измененный текст в файл result
-	for (auto &line : text) {
-		if (line.empty()) continue;
-		
-		auto words = splitBySpace(line);
-		for (auto &w : words) {
-			if (!w.empty()) {
-				w[0] = (char)toupper((unsigned char)w[0]);
-			} // if
-		} // for w
-		
+	vector<string> text = readLines(fileName);
+
+	for (auto &line: text) {
+		if (line.empty()) {
+			continue;
+		} // if\
+
+		// обработка каждой строки
+		vector<string> words = splitBySpace(line);
+		for (auto &word: words) {
+			// !! проблему с 'я' обнаружил Гладченко Д., ПВ-521
+			word[0] = (word[0] == 'я')? 'Я': toupper(word[0]);
+		} // for word
+
+		// формирование строки из преобразованных слов
 		line = join(" ", words);
 	} // for line
-	
+
 	writeLines(result, text);
 } // TextProcessor::capitalizeText
 
 
-// Упорядочить строки текста по длине
+// Упорядочить текст по длине строк, сохранить измененный текст в файл result
 void TextProcessor::orderByLen(const string& fileName, const string& result) {
-	auto text = readLines(fileName);
-	
-	// Сортировка по длине строки
-	sort(text.begin(), text.end(), [](const string &a, const string &b) { 
-		return a.size() < b.size(); 
+	vector<string> text = readLines(fileName);
+
+	sort(text.begin(), text.end(), [](const string &s1, const string& s2) {
+		return s1.size() < s2.size();
 	});
-	
+
 	writeLines(result, text);
 } // TextProcessor::orderByLen
 
 
-// В каждой строке текста упорядочить слова по алфавиту
+// Упорядочить слоыв в строках по алфавиту, сохранить измененный текст в файл result
 void TextProcessor::orderLines(const string& fileName, const string& result) {
-	auto text = readLines(fileName);
-	
-	// Обработка файла, в каждой строке упорядочить слова по алфавиту
-	// оставить между словами по одному пробелу
-	for (auto &line : text) {
-		if (line.empty()) continue;
-		
+	vector<string> text = readLines(fileName);
+
+	for (auto& line : text) {
+		if (line.empty()) {
+			continue;
+		} // if
+
 		auto words = splitBySpace(line);
 		sort(words.begin(), words.end());
+
 		line = join(" ", words);
 	} // for line
-	
+
 	writeLines(result, text);
 } // TextProcessor::orderLines
 
 
-// Вспомогательная функция: разбить строку по пробелам
+// ------------------------------------------------------------------
+
+// возвращает вектор слов из строки, состоящей из русских букв,
+// слова разделяются одним или несколкими пробелами
 vector<string> TextProcessor::splitBySpace(const string& line) {
-	vector<string> tokens;
-	string token;
+	vector<string> words;
+
 	stringstream ss(line);
-	while (ss >> token) {
-		tokens.emplace_back(token);
+
+	while (!ss.fail()) {
+		string word;
+		ss >> word;
+
+		// игнорируем пустые строки, которые образуются
+		// из-за двух поодряд идущих пробелов
+		if (word.empty()) {
+			continue;
+		} // if
+
+		// cout << "DEBUG: " << word << "\n";
+		words.emplace_back(word);
 	} // while
-	return tokens;
-} // TextProcessor::splitBySpace
+
+	return words;
+} // TextProcessor::splitBySpace	// чтение текста в вектор
 
 
-// Вспомогательная функция: прочитать все строки из файла
+// Чтение файла в вектор 
 vector<string> TextProcessor::readLines(const string& fileName) {
 	fstream fs(fileName, ios::in);
-	
+
 	if (!fs.is_open()) {
 		throw exception(("TextProcessor: Ошибка открытия файла " + fileName + " для чтения").c_str());
 	} // if
 
+	// задать кодировку потока ввода CP1251  
 	fs.imbue(locale(".1251"));
-	
-	vector<string> lines; 
-	string line;
-	while (getline(fs, line)) {
-		lines.emplace_back(line);
-	} // while
-	
+
+	// Построчное чтение файла, добавление строки в вектор
+	vector<string> text;
+	for (;  !fs.eof(); fs.peek()) {
+		string line;
+		getline(fs, line);
+		text.emplace_back(line);
+	} // for
+
 	fs.close();
-	return lines;
+	return text;
 } // TextProcessor::readLines
 
 
-// Вспомогательная функция: записать все строки в файл
+// Запись вектора в файл
 void TextProcessor::writeLines(const string& fileName, const vector<string>& text) {
 	fstream fs(fileName, ios::out);
-	
+
 	if (!fs.is_open()) {
 		throw exception(("TextProcessor: Ошибка открытия файла " + fileName + " для записи").c_str());
 	} // if
 
+	// задать кодировку потока вывода CP1251  
 	fs.imbue(locale(".1251"));
-	
-	for (auto &l : text) {
-		fs << l << '\n';
-	} // for l
-	
+
+	// Запись строки из вектора в файл
+	for (auto line:text) {
+		fs << line << "\n";
+	} // for
+
 	fs.close();
 } // TextProcessor::writeLines
 
 
-// Вспомогательная функция: объединить вектор строк в одну строку с разделителем
+// соединение строк из вектора через разделиель
 string TextProcessor::join(const string& delimeter, const vector<string> tokens) {
-	string out;
-	for (size_t i = 0; i < tokens.size(); ++i) {
-		out += tokens[i];
-		if (i + 1 < tokens.size()) {
-			out += delimeter;
-		} // if
-	} // for i
-	return out;
+	auto line = ""s;
+
+	for (auto& token : tokens) {
+		line += token + " ";
+	} // for token
+
+	// удалить последний символ строик - добавленный пробел
+	line.resize(line.size() - 1);
+	return line;
 } // TextProcessor::join

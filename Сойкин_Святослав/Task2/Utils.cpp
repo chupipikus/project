@@ -11,7 +11,7 @@
 static HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 
 void init(const wstring &title) {
-	SetConsoleTitle(title.c_str());
+	SetConsoleTitle((LPCWSTR)title.c_str());
 	SetConsoleOutputCP(CODE_PAGE);
 	SetConsoleCP(CODE_PAGE);
 	srand(GetTickCount());
