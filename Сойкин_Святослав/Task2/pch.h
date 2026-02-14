@@ -15,6 +15,7 @@
 #include <fstream>   // для операций файловой ввода/вывода
 
 #include <vector>
+#include <map>
 #include <algorithm>
 #include <numeric>
 #include <locale>

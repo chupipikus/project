@@ -314,4 +314,3 @@ void Payers::loadFromCSV(const string& fname) {
 		throw runtime_error("CSV: Коллекция должна быть непустая.");
 	} // if
 } // Payers::loadFromCSV
-}
