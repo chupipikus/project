@@ -1,0 +1,17 @@
+{
+  "files.encoding": "cp1251",
+  "files.autoGuessEncoding": true,
+  "[cpp]": {
+    "files.encoding": "cp1251"
+  },
+  "[c]": {
+    "files.encoding": "cp1251"
+  },
+  "[h]": {
+    "files.encoding": "cp1251"
+  },
+  "files.associations": {
+    "*.h": "cpp",
+    "*.cpp": "cpp"
+  }
+}
